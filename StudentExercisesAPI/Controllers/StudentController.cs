@@ -47,7 +47,6 @@ namespace StudentStudentsAPI.Controllers
                                         JOIN Exercise e ON se.ExerciseId = e.Id
                                         ";
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
-                    List<Student> students = new List<Student>();
 
                     Dictionary<int, Student> studentHash = new Dictionary<int, Student>();
 
@@ -80,8 +79,8 @@ namespace StudentStudentsAPI.Controllers
                         });
 
 
-                        students.AddRange(studentHash.Values);
                     }
+                    List<Student> students = studentHash.Values.ToList();
                     reader.Close();
 
                     return Ok(students);

@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using StudentExercisesAPI.Models;
 
-namespace StudentStudentsAPI.Controllers
+namespace StudentExercisesAPI.Controllers
 {
     [Route("[controller]")]
     [ApiController]

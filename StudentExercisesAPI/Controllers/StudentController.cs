@@ -30,22 +30,60 @@ namespace StudentExercisesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> GetStudents(int? cohort, string q, string exercise)
         {
+            string sql = @"SELECT 
+                            s.Id, s.FirstName, s.LastName, s.SlackHandle,
+                            c.Id CohortId, c.Name CohortName,
+                            e.Id ExerciseId, e.Name, e.Language
+                        FROM Student s
+                        JOIN Cohort c ON s.CohortId = c.Id
+                        JOIN StudentExercise se ON se.StudentId = s.Id
+                        JOIN Exercise e ON se.ExerciseId = e.Id
+                        WHERE 2=2
+                        ";
+
+            if (cohort != null)
+            {
+                sql = $"{sql} AND s.CohortId = @cohortId";
+            }
+
+            if(exercise != null)
+            {
+                sql = $"{sql} AND e.Name LIKE @exerciseName";
+            }
+
+            if (q != null)
+            {
+                sql = $@"{sql} AND (
+                    s.LastName LIKE @q
+                    OR s.FirstName LIKE @q
+                    OR s.SlackHandle LIKE @q
+                    )
+                    ";
+
+            }
+
+
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"SELECT 
-                                            s.Id, s.FirstName, s.LastName, s.SlackHandle,
-                                            c.Id CohortId, c.Name CohortName,
-                                            e.Id ExerciseId, e.Name, e.Language
-                                        FROM Student s
-                                        JOIN Cohort c ON s.CohortId = c.Id
-                                        JOIN StudentExercise se ON se.StudentId = s.Id
-                                        JOIN Exercise e ON se.ExerciseId = e.Id
-                                        ";
+                    cmd.CommandText = sql;
+                    if (cohort != null)
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@cohortId", cohort));
+                    }
+                    if (q != null)
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@q", $"%{q}%"));
+
+                    }
+                    if (exercise != null)
+                    {
+                        cmd.Parameters.Add(new SqlParameter("@exerciseName", $"%{exercise}%"));
+                    }
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     Dictionary<int, Student> studentHash = new Dictionary<int, Student>();

@@ -110,7 +110,7 @@ namespace StudentExercisesAPI.Controllers
                                         OUTPUT INSERTED.Id
                                         VALUES (@name, @language)";
                     cmd.Parameters.Add(new SqlParameter("@name", exercise.Name));
-                    cmd.Parameters.Add(new SqlParameter("@language", exercise.Language));
+                    cmd.Parameters.Add(new SqlParameter("@language", exercise.Language ?? ""));
 
                     int newId = (int) await cmd.ExecuteScalarAsync();
                     exercise.Id = newId;

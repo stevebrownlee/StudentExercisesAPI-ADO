@@ -30,7 +30,7 @@ namespace StudentExercisesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStudents(int? cohort, string q, string exercise)
+        public async Task<IActionResult> GetStudents(int? cohort, string q, string exercise, string orderBy)
         {
             string sql = @"SELECT 
                             s.Id, s.FirstName, s.LastName, s.SlackHandle,
@@ -48,7 +48,8 @@ namespace StudentExercisesAPI.Controllers
                 sql = $"{sql} AND s.CohortId = @cohortId";
             }
 
-            if(exercise != null)
+
+            if (exercise != null)
             {
                 sql = $"{sql} AND e.Name LIKE @exerciseName";
             }
@@ -64,6 +65,10 @@ namespace StudentExercisesAPI.Controllers
 
             }
 
+            if (orderBy != null)
+            {
+                sql = $"{sql} ORDER BY {orderBy}";
+            }
 
             using (SqlConnection conn = Connection)
             {
@@ -84,6 +89,7 @@ namespace StudentExercisesAPI.Controllers
                     {
                         cmd.Parameters.Add(new SqlParameter("@exerciseName", $"%{exercise}%"));
                     }
+
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
 
                     Dictionary<int, Student> studentHash = new Dictionary<int, Student>();

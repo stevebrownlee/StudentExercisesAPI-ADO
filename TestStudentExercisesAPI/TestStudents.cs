@@ -21,8 +21,6 @@ namespace TestStudentExercisesAPI
             {
                 var response = await client.GetAsync("/student");
 
-                response.EnsureSuccessStatusCode();
-
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var studentList = JsonConvert.DeserializeObject<List<Student>>(responseBody);
 
@@ -39,14 +37,13 @@ namespace TestStudentExercisesAPI
             {
                 var response = await client.GetAsync("/student/1");
 
-                response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var student = JsonConvert.DeserializeObject<Student>(responseBody);
 
                 Assert.Equal(HttpStatusCode.OK, response.StatusCode);
                 Assert.Equal("Kate", student.FirstName);
-                Assert.Equal("Williams", student.LastName);
+                Assert.Equal("Williams-Spradlin", student.LastName);
                 Assert.NotNull(student);
             }
         }
@@ -83,7 +80,6 @@ namespace TestStudentExercisesAPI
                     new StringContent(helenAsJSON, Encoding.UTF8, "application/json")
                 );
 
-                response.EnsureSuccessStatusCode();
 
                 string responseBody = await response.Content.ReadAsStringAsync();
                 var newHelen = JsonConvert.DeserializeObject<Student>(responseBody);
@@ -95,7 +91,6 @@ namespace TestStudentExercisesAPI
 
 
                 var deleteResponse = await client.DeleteAsync($"/student/{newHelen.Id}");
-                deleteResponse.EnsureSuccessStatusCode();
                 Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
             }
         }
@@ -136,7 +131,6 @@ namespace TestStudentExercisesAPI
                     "/student/1",
                     new StringContent(modifiedKateAsJSON, Encoding.UTF8, "application/json")
                 );
-                response.EnsureSuccessStatusCode();
                 string responseBody = await response.Content.ReadAsStringAsync();
 
                 Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);

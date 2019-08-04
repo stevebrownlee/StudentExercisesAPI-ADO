@@ -31,14 +31,21 @@ namespace StudentExercisesAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get(string language)
         {
+            string sqlStatement = "SELECT Id, Name, Language FROM Exercise";
+
+            if (language != null)
+            {
+                sqlStatement += $" WHERE Language = '{language}'";
+            }
+
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = "SELECT Id, Name, Language FROM Exercise";
+                    cmd.CommandText = sqlStatement;
                     SqlDataReader reader = await cmd.ExecuteReaderAsync();
                     List<Exercise> exercises = new List<Exercise>();
 

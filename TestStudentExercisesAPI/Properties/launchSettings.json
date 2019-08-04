@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "TestStudentExercisesAPI": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT ": "Testing"
+      }
+    }
+  }
+}
